@@ -1,0 +1,53 @@
+# CIFAR-10 Rectified Flow 配置文件
+
+# 数据配置
+data:
+  dataset: cifar10
+  data_dir: ./data
+  batch_size: 128
+  num_workers: 4
+  pin_memory: true
+
+# 模型配置
+model:
+  type: unet
+  in_channels: 3
+  out_channels: 3
+  base_channels: 128
+  channel_multipliers: [1, 2, 2, 2]
+  num_res_blocks: 2
+  attention_resolutions: [16]
+  num_classes: 10
+  dropout: 0.1
+
+# Flow 配置
+flow:
+  type: rectified_flow
+  cfg_dropout: 0.1  # Classifier-free guidance dropout rate
+
+# 训练配置
+training:
+  num_epochs: 200
+  learning_rate: 2.0e-4
+  weight_decay: 0.01
+  warmup_steps: 1000
+  gradient_clip: 1.0
+  ema_decay: 0.9999
+  mixed_precision: true
+  log_interval: 100
+  save_interval: 10  # epochs
+  sample_interval: 5  # epochs
+
+# 采样配置
+sampling:
+  num_steps: 50
+  cfg_scale: 2.0  # Guidance scale
+  
+# 日志配置
+logging:
+  use_wandb: false
+  project_name: flow_matching_cifar10
+  
+# 硬件配置
+device: cuda
+seed: 42
