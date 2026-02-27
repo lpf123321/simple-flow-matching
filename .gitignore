@@ -5,3 +5,4 @@ outputs
 plans
 docs
 eval_outputs
+wandb
