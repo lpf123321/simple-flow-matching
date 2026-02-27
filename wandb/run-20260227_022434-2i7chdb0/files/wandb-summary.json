@@ -1,1 +1,0 @@
-{"eval/num_samples":10000,"_timestamp":1.7721592303895586e+09,"_step":1,"eval/inception_score_mean":3.7207369804382324,"eval/inception_score_std":0.06531226634979248,"_wandb":{"runtime":154},"_runtime":154,"eval/fid_score":24.315121340081532}
