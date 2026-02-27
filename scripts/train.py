@@ -17,6 +17,14 @@ from src.flow import RectifiedFlow
 from src.data import get_cifar10_dataloaders
 from src.training import Trainer
 
+# wandb 导入
+try:
+    import wandb
+    WANDB_AVAILABLE = True
+except ImportError:
+    WANDB_AVAILABLE = False
+    print("警告: wandb 未安装，将跳过 wandb 日志记录")
+
 
 def set_seed(seed: int):
     """设置随机种子"""
@@ -102,6 +110,60 @@ def main():
     # 创建 Flow
     flow = RectifiedFlow(model, num_classes=config['model']['num_classes'])
     
+    # 初始化 wandb
+    wandb_run = None
+    if config['logging']['use_wandb'] and WANDB_AVAILABLE:
+        print("\n初始化 Weights & Biases...")
+        wandb_run = wandb.init(
+            project=config['logging']['project_name'],
+            entity=config['logging'].get('entity', None),
+            name=config['logging'].get('run_name', None),
+            tags=config['logging'].get('tags', []),
+            notes=config['logging'].get('notes', ''),
+            config={
+                # 数据配置
+                'dataset': config['data']['dataset'],
+                'batch_size': config['data']['batch_size'],
+                'num_workers': config['data']['num_workers'],
+                
+                # 模型配置
+                'model_type': config['model']['type'],
+                'in_channels': config['model']['in_channels'],
+                'out_channels': config['model']['out_channels'],
+                'base_channels': config['model']['base_channels'],
+                'channel_multipliers': config['model']['channel_multipliers'],
+                'num_res_blocks': config['model']['num_res_blocks'],
+                'attention_resolutions': config['model']['attention_resolutions'],
+                'num_classes': config['model']['num_classes'],
+                'dropout': config['model']['dropout'],
+                'total_params': total_params,
+                'trainable_params': trainable_params,
+                
+                # Flow 配置
+                'flow_type': config['flow']['type'],
+                'cfg_dropout': config['flow']['cfg_dropout'],
+                
+                # 训练配置
+                'num_epochs': config['training']['num_epochs'],
+                'learning_rate': config['training']['learning_rate'],
+                'weight_decay': config['training']['weight_decay'],
+                'warmup_steps': config['training']['warmup_steps'],
+                'gradient_clip': config['training']['gradient_clip'],
+                'ema_decay': config['training']['ema_decay'],
+                'mixed_precision': config['training']['mixed_precision'],
+                
+                # 采样配置
+                'sampling_num_steps': config['sampling']['num_steps'],
+                'sampling_cfg_scale': config['sampling']['cfg_scale'],
+                
+                # 其他
+                'device': device,
+                'seed': config['seed']
+            }
+        )
+        print(f"wandb 运行 ID: {wandb_run.id}")
+        print(f"wandb 运行 URL: {wandb_run.url}")
+    
     # 创建训练器
     print("\n创建训练器...")
     trainer = Trainer(
@@ -109,7 +171,8 @@ def main():
         flow=flow,
         train_loader=train_loader,
         config=config,
-        device=device
+        device=device,
+        wandb_run=wandb_run
     )
     
     # 从检查点恢复

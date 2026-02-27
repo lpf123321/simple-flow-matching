@@ -45,8 +45,14 @@ sampling:
   
 # 日志配置
 logging:
-  use_wandb: false
+  use_wandb: true
   project_name: flow_matching_cifar10
+  entity: null  # wandb 团队名称，null 表示使用个人账户
+  run_name: null  # 运行名称，null 表示自动生成
+  tags: ["rectified_flow", "cifar10"]  # 标签
+  notes: "Flow Matching training on CIFAR-10"  # 备注
+  log_images_interval: 1  # 每隔多少个 epoch 记录图像
+  log_model_interval: 10  # 每隔多少个 epoch 保存模型到 wandb
   
 # 硬件配置
 device: cuda

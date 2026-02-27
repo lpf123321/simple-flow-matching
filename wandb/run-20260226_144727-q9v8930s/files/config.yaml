@@ -1,0 +1,151 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            1ljl8dh03h60mzxi2oulr0ynd07qwjcv:
+                args:
+                    - --config
+                    - configs/cifar10_rectified_flow.yaml
+                codePath: scripts/train.py
+                codePathLocal: scripts/train.py
+                cpu_count: 32
+                cpu_count_logical: 64
+                cudaVersion: "12.4"
+                disk:
+                    /:
+                        total: "2013991550976"
+                        used: "1798584954880"
+                email: 3401266024g@gmail.com
+                executable: /home/wxs/anaconda3/envs/flow_matching/bin/python
+                git:
+                    commit: bc9fdee4d429ca23ebcaeb0ca337fd09b2f3fc56
+                    remote: https://github.com/lpf123321/simple-flow-matching.git
+                gpu: NVIDIA GeForce RTX 4090
+                gpu_count: 8
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-2b0e2e37-ae6c-57c2-97f3-572ebdef3068
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-05d1c7f4-a283-c16b-0563-e59f28bc25f9
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-8d326134-da28-707c-3583-c1421c72516a
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-d483d095-cf92-b0ef-a9ed-644b01a0900c
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-76244aad-62c2-c9bf-6595-ee4eb27c21eb
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-8533443d-5668-42f2-b291-a7227d763033
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-b9602d32-f5b8-9e9f-c9a3-abc1848d9d17
+                    - architecture: Ada
+                      cudaCores: 16384
+                      memoryTotal: "25757220864"
+                      name: NVIDIA GeForce RTX 4090
+                      uuid: GPU-3eb5b075-cd7b-cf56-96b1-558b20bbd7e4
+                host: dbcloud
+                memory:
+                    total: "1081837862912"
+                os: Linux-5.4.0-216-generic-x86_64-with-glibc2.31
+                program: /data3/Template/scripts/train.py
+                python: CPython 3.11.14
+                root: /data3/Template
+                startedAt: "2026-02-26T14:47:27.802610Z"
+                writerId: 1ljl8dh03h60mzxi2oulr0ynd07qwjcv
+        m: []
+        python_version: 3.11.14
+        t:
+            "1":
+                - 1
+                - 41
+            "2":
+                - 1
+                - 41
+            "3":
+                - 2
+                - 15
+                - 16
+                - 61
+            "4": 3.11.14
+            "5": 0.25.0
+            "12": 0.25.0
+            "13": linux-x86_64
+attention_resolutions:
+    value:
+        - 16
+base_channels:
+    value: 128
+batch_size:
+    value: 128
+cfg_dropout:
+    value: 0.1
+channel_multipliers:
+    value:
+        - 1
+        - 2
+        - 2
+        - 2
+dataset:
+    value: cifar10
+device:
+    value: cuda
+dropout:
+    value: 0.1
+ema_decay:
+    value: 0.9999
+flow_type:
+    value: rectified_flow
+gradient_clip:
+    value: 1
+in_channels:
+    value: 3
+learning_rate:
+    value: 0.0002
+mixed_precision:
+    value: true
+model_type:
+    value: unet
+num_classes:
+    value: 10
+num_epochs:
+    value: 200
+num_res_blocks:
+    value: 2
+num_workers:
+    value: 4
+out_channels:
+    value: 3
+sampling_cfg_scale:
+    value: 2
+sampling_num_steps:
+    value: 50
+seed:
+    value: 42
+total_params:
+    value: 27147651
+trainable_params:
+    value: 27147651
+warmup_steps:
+    value: 1000
+weight_decay:
+    value: 0.01

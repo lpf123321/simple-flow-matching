@@ -18,6 +18,13 @@ from src.flow import EulerSampler
 from src.data import get_cifar10_dataloaders
 from torchvision.utils import save_image
 
+# wandb 导入
+try:
+    import wandb
+    WANDB_AVAILABLE = True
+except ImportError:
+    WANDB_AVAILABLE = False
+
 
 def load_model(checkpoint_path: str, device: str = 'cuda'):
     """加载模型"""
@@ -208,6 +215,17 @@ def main():
         action='store_true',
         help='保存生成的图像（用于手动检查）'
     )
+    parser.add_argument(
+        '--use_wandb',
+        action='store_true',
+        help='使用 wandb 记录评估结果'
+    )
+    parser.add_argument(
+        '--wandb_project',
+        type=str,
+        default='flow_matching_cifar10_eval',
+        help='wandb 项目名称'
+    )
     args = parser.parse_args()
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -215,6 +233,22 @@ def main():
     
     if device == 'cpu':
         print("警告: 使用 CPU 计算会非常慢，建议使用 GPU")
+    
+    # 初始化 wandb
+    wandb_run = None
+    if args.use_wandb and WANDB_AVAILABLE:
+        print("\n初始化 Weights & Biases...")
+        wandb_run = wandb.init(
+            project=args.wandb_project,
+            name=f'eval-{Path(args.checkpoint).stem}',
+            tags=['evaluation', args.metric],
+            config={
+                'checkpoint': args.checkpoint,
+                'num_samples': args.num_samples,
+                'batch_size': args.batch_size,
+                'metric': args.metric,
+            }
+        )
     
     # 加载模型
     print(f"\n加载模型: {args.checkpoint}")
@@ -295,6 +329,14 @@ def main():
                     f.write(f"Num samples: {args.num_samples}\n")
                     f.write(f"FID Score: {fid_value:.2f}\n")
                 print(f"\n结果已保存到: {output_dir / 'fid_score.txt'}")
+                
+                # wandb 记录
+                if wandb_run is not None:
+                    wandb.log({
+                        'eval/fid_score': fid_value,
+                        'eval/num_samples': args.num_samples,
+                    })
+                    print("FID 分数已记录到 wandb")
     
     # 计算 IS
     if args.metric in ['is', 'both']:
@@ -317,6 +359,15 @@ def main():
                 f.write(f"Num samples: {args.num_samples}\n")
                 f.write(f"Inception Score: {is_mean:.2f} ± {is_std:.2f}\n")
             print(f"\n结果已保存到: {output_dir / 'inception_score.txt'}")
+            
+            # wandb 记录
+            if wandb_run is not None:
+                wandb.log({
+                    'eval/inception_score_mean': is_mean,
+                    'eval/inception_score_std': is_std,
+                    'eval/num_samples': args.num_samples,
+                })
+                print("Inception Score 已记录到 wandb")
     
     # 可选：保存生成的图像
     if args.save_images:
@@ -325,6 +376,28 @@ def main():
         print(f"\n保存生成图像到: {output_dir}")
         save_images_to_dir(all_samples, output_dir)
         print(f"已保存 {len(all_samples)} 张图像")
+        
+        # wandb 记录样本图像
+        if wandb_run is not None:
+            import torchvision.utils as vutils
+            # 随机选择一些样本进行可视化
+            num_vis_samples = min(64, len(all_samples))
+            vis_samples = all_samples[:num_vis_samples]
+            grid = vutils.make_grid(
+                vis_samples,
+                nrow=8,
+                normalize=True,
+                value_range=(-1, 1)
+            )
+            wandb.log({
+                'eval/sample_images': wandb.Image(grid, caption=f'Generated samples from {Path(args.checkpoint).stem}')
+            })
+            print("样本图像已记录到 wandb")
+    
+    # 关闭 wandb
+    if wandb_run is not None:
+        wandb.finish()
+        print("\nwandb 运行已结束")
 
 
 if __name__ == '__main__':
